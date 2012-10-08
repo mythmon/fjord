@@ -17,3 +17,6 @@ class SimpleForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea(), required=True)
     # required=False means this allowed to be False, not that it can be blank.
     happy = forms.BooleanField(required=False, widget=forms.HiddenInput())
+
+    email_ok = forms.BooleanField(required=False)
+    email = forms.EmailField(required=False)

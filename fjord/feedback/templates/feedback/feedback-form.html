@@ -43,6 +43,22 @@
           {{ form.url.errors }}
         </div>
 
+        <div>
+          <label for="id_email">
+            {{ _('Email address (optional):') }}
+          </label>
+          <p>{{ form.email }}</p>
+
+          <label for="id_email_ok">
+            <p>
+              {{ form.email_ok }}
+              {{ _('Check here to let us contact you to follow up on your feedback.') }}
+            </p>
+          </label>
+
+          <p>{{ _('Note: for support requests, please instead go to support.mozilla.com') }}</p>
+        </div>
+
         {% if type == 'sad' %}
           <div class="feedback-message">
             {% trans %}

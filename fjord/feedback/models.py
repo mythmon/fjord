@@ -97,3 +97,10 @@ class SimpleIndex(FjordMappingType, Indexable):
         mapping = cls.get_mapping()
         return dict((field, getattr(obj, field))
                     for field in mapping.keys())
+
+
+class SimpleEmail(ModelBase):
+
+    created = models.DateTimeField(default=datetime.now)
+    opinion = models.ForeignKey(Simple)
+    email = models.EmailField()

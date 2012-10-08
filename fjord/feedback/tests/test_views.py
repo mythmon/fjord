@@ -69,3 +69,44 @@ class TestFeedback(TestCase):
         r = self.client.get(url, HTTP_USER_AGENT='Firefox')
         eq_(200, r.status_code)
         self.assertTemplateUsed(r, 'feedback/feedback.html')
+
+    def test_email_collection(self):
+        """If the user enters an email and checks the box, collect the email."""
+        email_count = models.SimpleEmail.objects.count()
+        url = reverse('feedback', args=('firefox.desktop.stable',))
+
+        r = self.client.post(url, {
+            'happy': 0,
+            'description': u"I like the colors.",
+            'email': 'bob@example.com',
+            'email_ok': 1,
+        })
+        eq_(email_count + 1, models.SimpleEmail.objects.count())
+        eq_(r.status_code, 302)
+
+    def test_email_privacy(self):
+        """If an email is entered, but the box is not checked, don't collect."""
+        email_count = models.SimpleEmail.objects.count()
+        url = reverse('feedback', args=('firefox.desktop.stable',))
+
+        r = self.client.post(url, {
+            'happy': 0,
+            'description': u"I like the colors.",
+            'email': 'bob@example.com',
+            'email_ok': 0,
+        })
+        eq_(email_count, models.SimpleEmail.objects.count())
+        eq_(r.status_code, 302)
+
+    def test_email_no_fail(self):
+        """If an email is not entered and the box is checked, don't error out."""
+        email_count = models.SimpleEmail.objects.count()
+        url = reverse('feedback', args=('firefox.desktop.stable',))
+
+        r = self.client.post(url, {
+            'happy': 0,
+            'description': u"I like the colors.",
+            'email_ok': 1,
+        })
+        eq_(email_count, models.SimpleEmail.objects.count())
+        eq_(r.status_code, 302)
