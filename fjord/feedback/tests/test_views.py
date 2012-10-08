@@ -72,7 +72,6 @@ class TestFeedback(TestCase):
 
     def test_email_collection(self):
         """If the user enters an email and checks the box, collect the email."""
-        email_count = models.SimpleEmail.objects.count()
         url = reverse('feedback', args=('firefox.desktop.stable',))
 
         r = self.client.post(url, {
@@ -81,12 +80,11 @@ class TestFeedback(TestCase):
             'email': 'bob@example.com',
             'email_ok': 1,
         })
-        eq_(email_count + 1, models.SimpleEmail.objects.count())
+        eq_(models.SimpleEmail.objects.count(), 1)
         eq_(r.status_code, 302)
 
     def test_email_privacy(self):
         """If an email is entered, but the box is not checked, don't collect."""
-        email_count = models.SimpleEmail.objects.count()
         url = reverse('feedback', args=('firefox.desktop.stable',))
 
         r = self.client.post(url, {
@@ -95,12 +93,11 @@ class TestFeedback(TestCase):
             'email': 'bob@example.com',
             'email_ok': 0,
         })
-        eq_(email_count, models.SimpleEmail.objects.count())
+        assert not models.SimpleEmail.objects.exists()
         eq_(r.status_code, 302)
 
     def test_email_missing(self):
         """If an email is not entered and the box is checked, don't error out."""
-        email_count = models.SimpleEmail.objects.count()
         url = reverse('feedback', args=('firefox.desktop.stable',))
 
         r = self.client.post(url, {
@@ -108,14 +105,13 @@ class TestFeedback(TestCase):
             'description': u'Can you fix it?',
             'email_ok': 1,
         })
-        eq_(email_count, models.SimpleEmail.objects.count())
+        assert not models.SimpleEmail.objects.exists()
         # No redirect to thank you page, since there is a form error.
         eq_(r.status_code, 200)
         self.assertContains(r, 'Please enter a valid email')
 
     def test_email_invalid(self):
         """If an email is not entered and the box is checked, don't error out."""
-        email_count = models.SimpleEmail.objects.count()
         url = reverse('feedback', args=('firefox.desktop.stable',))
 
         r = self.client.post(url, {
@@ -124,7 +120,7 @@ class TestFeedback(TestCase):
             'email_ok': 1,
             'email': '/dev/sda1\0',
         })
-        eq_(email_count, models.SimpleEmail.objects.count())
+        assert not models.SimpleEmail.objects.exists()
         # No redirect to thank you page, since there is a form error.
         eq_(r.status_code, 200)
         self.assertContains(r, 'Please enter a valid email')

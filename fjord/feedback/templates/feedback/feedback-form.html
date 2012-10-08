@@ -57,9 +57,8 @@
           </label>
 
           <p>
-            {% trans %}
-              Note: for support requests, please instead go to
-              <a href="http://support.mozilla.org">Mozilla Support</a>.
+            {% trans url="http://support.mozilla.org" %}
+              Note: for support requests, please instead go to <a href="{{ url }}">Mozilla Support</a>.
              {% endtrans %}
           </p>
           <p>
