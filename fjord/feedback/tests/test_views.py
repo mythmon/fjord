@@ -98,15 +98,33 @@ class TestFeedback(TestCase):
         eq_(email_count, models.SimpleEmail.objects.count())
         eq_(r.status_code, 302)
 
-    def test_email_no_fail(self):
+    def test_email_missing(self):
         """If an email is not entered and the box is checked, don't error out."""
         email_count = models.SimpleEmail.objects.count()
         url = reverse('feedback', args=('firefox.desktop.stable',))
 
         r = self.client.post(url, {
             'happy': 0,
-            'description': u"I like the colors.",
+            'description': u'Can you fix it?',
             'email_ok': 1,
         })
         eq_(email_count, models.SimpleEmail.objects.count())
-        eq_(r.status_code, 302)
+        # No redirect to thank you page, since there is a form error.
+        eq_(r.status_code, 200)
+        self.assertContains(r, 'Please enter a valid email')
+
+    def test_email_invalid(self):
+        """If an email is not entered and the box is checked, don't error out."""
+        email_count = models.SimpleEmail.objects.count()
+        url = reverse('feedback', args=('firefox.desktop.stable',))
+
+        r = self.client.post(url, {
+            'happy': 0,
+            'description': u'There is something wrong here.\0',
+            'email_ok': 1,
+            'email': '/dev/sda1\0',
+        })
+        eq_(email_count, models.SimpleEmail.objects.count())
+        # No redirect to thank you page, since there is a form error.
+        eq_(r.status_code, 200)
+        self.assertContains(r, 'Please enter a valid email')

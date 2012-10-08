@@ -1,5 +1,7 @@
 from django import forms
 
+from tower import ugettext as _
+
 
 class URLInput(forms.TextInput):
     """Text field with HTML5 URL Input type."""
@@ -20,3 +22,16 @@ class SimpleForm(forms.Form):
 
     email_ok = forms.BooleanField(required=False)
     email = forms.EmailField(required=False)
+
+    def clean(self):
+        cleaned_data = super(SimpleForm, self).clean()
+
+        email_ok = cleaned_data.get('email_ok')
+        email = cleaned_data.get('email')
+
+        if email_ok and not email:
+            raise forms.ValidationError(
+                _('Please enter a valid email address, or uncheck the box '
+                  'allowing us to contact you.'))
+
+        return cleaned_data

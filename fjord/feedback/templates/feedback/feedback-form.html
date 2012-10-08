@@ -56,7 +56,19 @@
             </p>
           </label>
 
-          <p>{{ _('Note: for support requests, please instead go to support.mozilla.com') }}</p>
+          <p>
+            {% trans %}
+              Note: for support requests, please instead go to
+              <a href="http://support.mozilla.org">Mozilla Support</a>.
+             {% endtrans %}
+          </p>
+          <p>
+            {% trans %}
+              While your feedback will be publicly visible, email address are
+              kept private. We understand your privacy is important.
+            {% endtrans %}
+          </p>
+
         </div>
 
         {% if type == 'sad' %}

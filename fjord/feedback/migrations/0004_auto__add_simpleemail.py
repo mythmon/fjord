@@ -11,7 +11,6 @@ class Migration(SchemaMigration):
         # Adding model 'SimpleEmail'
         db.create_table('feedback_simpleemail', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
             ('opinion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['feedback.Simple'])),
             ('email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
         ))
@@ -40,7 +39,6 @@ class Migration(SchemaMigration):
         },
         'feedback.simpleemail': {
             'Meta': {'object_name': 'SimpleEmail'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'opinion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['feedback.Simple']"})

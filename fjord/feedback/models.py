@@ -100,7 +100,5 @@ class SimpleIndex(FjordMappingType, Indexable):
 
 
 class SimpleEmail(ModelBase):
-
-    created = models.DateTimeField(default=datetime.now)
     opinion = models.ForeignKey(Simple)
     email = models.EmailField()
