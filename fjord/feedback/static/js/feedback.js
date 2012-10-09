@@ -146,16 +146,22 @@
         $('#happy-with-url').clickEnable('#happy-url');
         $('#sad-with-url').clickEnable('#sad-url');
 
-        $('.email-ok input[type=checkbox]').on('change', function() {
-            var checked = $(this).prop('checked')
-            var email = $(this).parents('label').siblings('.email');
+        function email_expansion(elem, time) {
+            var checked = $(elem).prop('checked');
+            var email = $(elem).parents('label').siblings('.email');
 
             if (checked) {
-                email.show(300);
+                email.show(time);
             } else {
-                email.hide(300);
+                email.hide(time);
             }
-        }).trigger('change');
+        }
+
+        $('.email-ok input[type=checkbox]').on('change', function() {
+            email_expansion(this, 300);
+        }).each(function() {
+            email_expansion(this, 0);
+        });
 
     });
 
