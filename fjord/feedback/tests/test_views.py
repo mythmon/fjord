@@ -124,3 +124,13 @@ class TestFeedback(TestCase):
         # No redirect to thank you page, since there is a form error.
         eq_(r.status_code, 200)
         self.assertContains(r, 'Please enter a valid email')
+
+        r = self.client.post(url, {
+            'happy': 0,
+            'description': u'There is something wrong here.\0',
+            'email_ok': 0,
+            'email': "huh what's this for?",
+        })
+        assert not models.SimpleEmail.objects.exists()
+        # Bad email if the box is not checked is not an error.
+        eq_(r.status_code, 302)

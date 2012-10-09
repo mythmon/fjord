@@ -145,6 +145,18 @@
 
         $('#happy-with-url').clickEnable('#happy-url');
         $('#sad-with-url').clickEnable('#sad-url');
+
+        $('.email-ok input[type=checkbox]').on('change', function() {
+            var checked = $(this).prop('checked')
+            var email = $(this).parents('label').siblings('.email');
+
+            if (checked) {
+                email.show(300);
+            } else {
+                email.hide(300);
+            }
+        }).trigger('change');
+
     });
 
     $('html').addClass('js');
