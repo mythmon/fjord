@@ -1,9 +1,10 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 from funfactory.urlresolvers import reverse
 from session_csrf import anonymous_csrf_exempt
 
+from fjord.base.util import smart_bool
 from fjord.feedback.forms import SimpleForm
 from fjord.feedback import models
 
@@ -53,7 +54,8 @@ def desktop_stable_feedback(request, template=None):
         else:
             # The user did something wrong. Update the appropriate form, so
             # the errors show correctly.
-            if request.POST.get('happy'):
+            happy = smart_bool(request.POST.get('happy', None))
+            if happy:
                 forms['happy'] = form
             else:
                 forms['sad'] = form

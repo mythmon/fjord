@@ -48,3 +48,29 @@ def smart_datetime(s, format='%Y-%m-%d', fallback=None):
         return datetime.strptime(s, format)
     except (ValueError, TypeError):
         return fallback
+
+
+def smart_bool(s, fallback=False):
+    """Convert an object that has a semantic boolean value to a real boolean.
+
+    Note that this is not the same as ``s`` being "truthy". The string
+    ``'False'`` will be returned as False, even though it is Truthy, None
+    would cause ``fallback`` (default of False) to be returned, and so would
+    ``'apple'``, since neither represent a semantic boolean value.
+
+    """
+    try:
+        return bool(int(s))
+    except (ValueError, TypeError):
+        pass
+
+    try:
+        s = s.lower()
+        if s in ['true', 't', 'yes', 'y', '1']:
+            return True
+        elif s in ['false', 'f', 'no', 'n', '0']:
+            return False
+    except AttributeError:
+        pass
+
+    return fallback
