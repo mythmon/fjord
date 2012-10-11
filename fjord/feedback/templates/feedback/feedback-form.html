@@ -50,7 +50,7 @@
               For example, if you are giving feedback about slowness,
               please tell us about relevant websites, if you notice it
               at the beginning or later in the browsing session and if
-              there are anyt status actions that you perform in Firefox that
+              there are any actions that you perform in Firefox that
               are particularly problematic.
             {% endtrans %}
           </div>
@@ -61,7 +61,6 @@
             {{ form.email_ok }}
             {{ _('Check here to let us contact you to follow up on your feedback.') }}
           </p>
-          {{ form.email_ok.errors }}
         </label>
 
         <div class="email">
@@ -73,11 +72,10 @@
 
           <p>
             {% trans %}
-              While your feedback will be publicly visible, email address are
-              kept private. We understand your privacy is important.
+              While your feedback will be publicly visible, email addresses
+              are kept private. We understand your privacy is important.
             {% endtrans %}
           </p>
-
         </div>
 
         <p>

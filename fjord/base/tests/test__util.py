@@ -56,23 +56,22 @@ class SmartDateTest(TestCase):
 
 class SmartBoolTest(TestCase):
 
+    msg_template = 'smart_bool(%r) - Expected %r, got %r'
+
     def test_truthy(self):
         truths = ['Yes', 'y', u'TRUE', '1', u'1', 1]
-        for t in truths:
-            b = smart_bool(t, 'fallback')
-            msg = 'smart_bool(%r) - Expected %r, got %r' % (t, True, b)
-            assert b == True, msg
+        for x in truths:
+            b = smart_bool(x, 'fallback')
+            assert b == True, self.message_template % (x, True, b)
 
     def test_falsey(self):
         falses = ['No', 'n', u'FALSE', '0', u'0', 0]
-        for f in falses:
-            b = smart_bool(f, 'fallback')
-            msg = 'smart_bool(%r) - Expected %r, got %r' % (f, False, b)
-            assert b == False, msg
+        for x in falses:
+            b = smart_bool(x, 'fallback')
+            assert b == False, self.message_template % (x, False, b)
 
     def test_fallback(self):
-        garbages = [None, 'apple', (), {}]
-        for g in garbages:
-            b = smart_bool(g, 'fallback')
-            msg = 'smart_bool(%r) - Expected %r, got %r' % (g, 'fallback', b)
-            assert b == 'fallback', msg
+        garbages = [None, 'apple', (), {}, u'']
+        for x in garbages:
+            b = smart_bool(x, 'fallback')
+            assert b == 'fallback', self.message_template % (x, 'fallback', b)

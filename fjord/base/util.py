@@ -66,9 +66,9 @@ def smart_bool(s, fallback=False):
 
     try:
         s = s.lower()
-        if s in ['true', 't', 'yes', 'y', '1']:
+        if s in ['true', 't', 'yes', 'y']:
             return True
-        elif s in ['false', 'f', 'no', 'n', '0']:
+        elif s in ['false', 'f', 'no', 'n']:
             return False
     except AttributeError:
         pass
