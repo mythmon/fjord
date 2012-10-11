@@ -62,16 +62,16 @@ class SmartBoolTest(TestCase):
         truths = ['Yes', 'y', u'TRUE', '1', u'1', 1]
         for x in truths:
             b = smart_bool(x, 'fallback')
-            assert b == True, self.message_template % (x, True, b)
+            assert b == True, self.msg_template % (x, True, b)
 
     def test_falsey(self):
         falses = ['No', 'n', u'FALSE', '0', u'0', 0]
         for x in falses:
             b = smart_bool(x, 'fallback')
-            assert b == False, self.message_template % (x, False, b)
+            assert b == False, self.msg_template % (x, False, b)
 
     def test_fallback(self):
         garbages = [None, 'apple', (), {}, u'']
         for x in garbages:
             b = smart_bool(x, 'fallback')
-            assert b == 'fallback', self.message_template % (x, 'fallback', b)
+            assert b == 'fallback', self.msg_template % (x, 'fallback', b)
