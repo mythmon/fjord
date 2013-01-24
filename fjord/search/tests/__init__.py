@@ -79,7 +79,7 @@ class ElasticTestCase(TestCase):
             # existing data into it.
             es_reindex_cmd()
 
-        self.refresh(settings.ES_TEST_SLEEP_DURATION)
+        self.refresh()
         if wait:
             get_indexing_es().health(wait_for_status='yellow')
 
