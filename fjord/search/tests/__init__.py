@@ -66,7 +66,7 @@ class ElasticTestCase(TestCase):
         if timesleep > 0:
             time.sleep(timesleep)
 
-    def setup_indexes(self, empty=False):
+    def setup_indexes(self, empty=False, wait=True):
         """(Re-)create ES indexes."""
         from fjord.search.index import es_reindex_cmd
 
@@ -80,6 +80,8 @@ class ElasticTestCase(TestCase):
             es_reindex_cmd()
 
         self.refresh(settings.ES_TEST_SLEEP_DURATION)
+        if wait:
+            get_indexing_es().health(wait_for_status='yellow')
 
     def teardown_indexes(self):
         es = get_indexing_es()
