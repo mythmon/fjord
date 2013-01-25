@@ -7,7 +7,7 @@ from fjord.base.browsers import parse_ua
 The middlewares in this file do mobile detection, provide a user override,
 and provide a cookie override. They must be used in the correct order.
 MobileMiddleware must always come after any of the other middlewares in this
-file.
+file in `settings.MIDDLEWARE_CLASSES`.
 """
 
 

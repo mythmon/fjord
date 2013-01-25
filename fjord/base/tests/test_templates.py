@@ -17,7 +17,6 @@ class MobileQueryStringOverrideTest(ElasticTestCase):
         # parameter should not set a cookie.
         resp = self.client.get(reverse('home_view'))
         assert MOBILE_COOKIE not in resp.cookies
-        eq_(resp.cookies[MOBILE_COOKIE].value, 'no')
 
         # Doing a request and specifying the mobile querystring
         # parameter should persist that value in the MOBILE cookie.
