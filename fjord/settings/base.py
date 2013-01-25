@@ -41,7 +41,7 @@ MIDDLEWARE_CLASSES = get_middleware(
         'mobility.middleware.XMobileMiddleware',
     ),
     append=(
-        'fjord.base.middleware.ParseUseragentMiddleware',
+        'fjord.base.middleware.UseragentMiddleware',
         'fjord.base.middleware.MobileQueryStringOverrideMiddleware',
         'fjord.base.middleware.MobileMiddleware',
         'django_statsd.middleware.GraphiteMiddleware',

@@ -13,12 +13,10 @@ class MobileQueryStringOverrideTest(ElasticTestCase):
     client_class = LocalizingClient
 
     def test_mobile_override(self):
-        # Doing a request without the mobile querystring parameter
-        # should assume we are a desktop, and set a cookie as such.
-        # This assumes that our UA is not something silly that will
-        # mark this request as mobile.
+        # Doing a request without specifying a mobile querystring
+        # parameter should not set a cookie.
         resp = self.client.get(reverse('home_view'))
-        assert MOBILE_COOKIE in resp.cookies
+        assert MOBILE_COOKIE not in resp.cookies
         eq_(resp.cookies[MOBILE_COOKIE].value, 'no')
 
         # Doing a request and specifying the mobile querystring
