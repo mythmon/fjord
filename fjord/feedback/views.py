@@ -13,7 +13,66 @@ def thanks(request):
     return render(request, 'feedback/thanks.html')
 
 
-def desktop_stable_feedback(request, template=None):
+def _handle_feedback_post(request):
+    form = SimpleForm(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        # Most platforms aren't different enough between versions to care.
+        # Windows is.
+        platform = request.BROWSER.platform
+        if platform == 'Windows':
+            platform += ' ' + request.BROWSER.platform_version
+
+        opinion = models.Simple(
+            # Data coming from the user
+            happy=data['happy'],
+            url=data['url'],
+            description=data['description'],
+            # Inferred data
+            prodchan=_get_prodchan(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            browser=request.BROWSER.browser,
+            browser_version=request.BROWSER.browser_version,
+            platform=platform,
+            locale=request.locale,
+        )
+        opinion.save()
+
+        if data['email_ok'] and data['email']:
+            e = models.SimpleEmail(email=data['email'], opinion=opinion)
+            e.save()
+
+        return HttpResponseRedirect(reverse('thanks')), form
+    else:
+        # The user did something wrong.
+        return None, form
+
+
+def _get_prodchan(request):
+    meta = request.BROWSER
+
+    product = ''
+    platform = ''
+    channel = 'stable'
+
+    if meta.browser == 'Firefox':
+        product = 'firefox'
+    else:
+        product = 'unknown'
+
+    if meta.platform == 'Android':
+        platform = 'android'
+    elif meta.platform == 'FirefoxOS':
+        platform = 'firefoxos'
+    elif meta.browser == 'Firefox':
+        platform = 'desktop'
+    else:
+        platform = 'unknown'
+
+    return '{0}.{1}.{2}'.format(product, platform, channel)
+
+
+def desktop_stable_feedback(request):
     # Use two instances of the same form because the template changes the text
     # based on the value of ``happy``.
     forms = {
@@ -22,38 +81,10 @@ def desktop_stable_feedback(request, template=None):
     }
 
     if request.method == 'POST':
-        form = SimpleForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            # Most platforms aren't different enough between versions to care.
-            # Windows is.
-            platform = request.BROWSER.platform
-            if platform == 'Windows':
-                platform += ' ' + request.BROWSER.platform_version
-
-            opinion = models.Simple(
-                # Data coming from the user
-                happy=data['happy'],
-                url=data['url'],
-                description=data['description'],
-                # Inferred data
-                prodchan='firefox.desktop.stable',
-                user_agent=request.META.get('HTTP_USER_AGENT', ''),
-                browser=request.BROWSER.browser,
-                browser_version=request.BROWSER.browser_version,
-                platform=platform,
-                locale=request.locale,
-            )
-            opinion.save()
-
-            if data['email_ok'] and data['email']:
-                e = models.SimpleEmail(email=data['email'], opinion=opinion)
-                e.save()
-
-            return HttpResponseRedirect(reverse('thanks'))
+        response, form = _handle_feedback_post(request)
+        if response:
+            return response
         else:
-            # The user did something wrong. Update the appropriate form, so
-            # the errors show correctly.
             happy = smart_bool(request.POST.get('happy', None))
             if happy:
                 forms['happy'] = form
@@ -72,5 +103,5 @@ feedback_routes = {
 @anonymous_csrf_exempt
 def feedback_router(request, formname=None, *args, **kwargs):
     # TODO: Route based on user agent detection.
-    view = feedback_routes[formname]
+    view = desktop_stable_feedback
     return view(request, *args, **kwargs)
