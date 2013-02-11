@@ -94,6 +94,20 @@ def desktop_stable_feedback(request):
     return render(request, 'feedback/feedback.html', {'forms': forms})
 
 
+def mobile_stable_feedback(request):
+    form = SimpleForm()
+    happy = None
+    if request.method == 'POST':
+        response, form = _handle_feedback_post(request)
+        if response:
+            return response
+        happy = smart_bool(request.POST.get('happy', None), None)
+    return render(request, 'feedback/mobile/feedback.html', {
+        'form': form,
+        'happy': happy,
+    })
+
+
 feedback_routes = {
     'firefox.desktop.stable': desktop_stable_feedback,
     None: desktop_stable_feedback,
@@ -102,6 +116,7 @@ feedback_routes = {
 
 @anonymous_csrf_exempt
 def feedback_router(request, formname=None, *args, **kwargs):
-    # TODO: Route based on user agent detection.
     view = desktop_stable_feedback
+    if request.BROWSER.mobile:
+        view = mobile_stable_feedback
     return view(request, *args, **kwargs)

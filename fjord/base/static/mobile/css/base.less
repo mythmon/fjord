@@ -1,0 +1,110 @@
+@import '../../css/lib/vendor-prefix.less';
+
+#nav-access {
+  display: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: url("../img/background.png") repeat-x scroll 0px 0px rgb(249, 249, 249);
+}
+
+.content {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+
+  article {
+    overflow-y: auto;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    transition: transform 0.5s;
+
+    &.prev {
+      transform: translate(-100%, 0);
+    }
+    &.next {
+      transform: translate(100%, 0);
+    }
+
+    header {
+      .box-shadow(0 1px 1px 1px rgba(0, 0, 0, 0.2));
+      color: #fff;
+      .gradient(#666, #666, #444, url("../../img/grain.png"));
+      height: 40px;
+      padding: 3px 10px;
+
+      h1 {
+        margin: 0;
+        font-size: 1.1em;
+        line-height: 2.2em;
+        display: inline-block;
+        height: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    section {
+      overflow: visible;
+      padding: 5px;
+      .border-box();
+
+      h2 {
+        margin: 0;
+        font-size: 1em;
+      }
+
+      textarea {
+        .border-box();
+        width: 100%;
+        height: 150px;
+      }
+
+      input[type=text] {
+        .border-box();
+        width: 100%;
+      }
+    }
+
+    aside {
+      background-color: #D8E9F5;
+      border: 1px solid #A4C5DB;
+      padding: 10px;
+      margin: 20px 0 20px 20px;
+      border-radius: 10px 0 0 10px;
+      font-size: 0.8em;
+    }
+  }
+}
+
+header {
+  button.back {
+    display: inline-block;
+    vertical-align: top;
+    float: none;
+    width: 30px;
+    height: 40px;
+    border: none;
+    background: transparent no-repeat -16px -12px url("../img/icons.png");
+    font-size: 0;
+    overflow: hidden;
+    position: relative;
+  }
+}
+
+.btn.submit {
+  width: 80%;
+  font-size: 1.1em;
+  padding: 5px;
+  margin: 0 auto 20px;
+  .gradient(#81bc2e, #81bc2e, #629827);
+  border-bottom: 2px solid #548322;
+  display: block;
+}
