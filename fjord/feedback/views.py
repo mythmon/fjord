@@ -3,14 +3,16 @@ from django.shortcuts import render
 
 from funfactory.urlresolvers import reverse
 from session_csrf import anonymous_csrf_exempt
+from mobility.decorators import mobile_template
 
 from fjord.base.util import smart_bool
 from fjord.feedback.forms import SimpleForm
 from fjord.feedback import models
 
 
-def thanks(request):
-    return render(request, 'feedback/thanks.html')
+@mobile_template('feedback/{mobile/}thanks.html')
+def thanks(request, template):
+    return render(request, template)
 
 
 def _handle_feedback_post(request):
