@@ -1,7 +1,10 @@
-from fjord.base.tests import TestCase, LocalizingClient, reverse
+from django.test.client import Client, RequestFactory
 from nose.tools import eq_
 
+from fjord.base.browsers import parse_ua
+from fjord.base.tests import TestCase, LocalizingClient, reverse
 from fjord.feedback import models
+from fjord.feedback.views import _get_prodchan
 
 
 class TestFeedback(TestCase):
@@ -134,3 +137,48 @@ class TestFeedback(TestCase):
         assert not models.SimpleEmail.objects.exists()
         # Bad email if the box is not checked is not an error.
         eq_(r.status_code, 302)
+
+
+class TestRouting(TestCase):
+
+    uas = {
+        'android': 'Mozilla/5.0 (Android; Mobile; rv:18.0) Gecko/18.0 '
+                   'Firefox/18.0',
+        'linux': 'Mozilla/5.0 (X11; Linux x86_64; rv:21.0) Gecko/20130212 '
+                 'Firefox/21.0',
+        'osx': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:20.0) '
+               'Gecko/20130208 Firefox/20.0',
+    }
+
+    def setUp(self):
+        super(TestRouting, self).setUp()
+        self.factory = RequestFactory()
+
+    def test_routing(self):
+        self.sub_routing(self.uas['android'], True)
+        self.sub_routing(self.uas['osx'], False)
+        self.sub_routing(self.uas['linux'], False)
+
+    def sub_routing(self, ua, mobile):
+        url = reverse('feedback')
+        extra = {
+            'HTTP_USER_AGENT': ua,
+        }
+        r = self.client.get(url, **extra)
+        if mobile:
+            self.assertTemplateUsed(r, 'feedback/mobile/feedback.html')
+        else:
+            self.assertTemplateUsed(r, 'feedback/feedback.html')
+
+    def test_prodchan(self):
+        self.sub_prodchan(self.uas['android'], 'firefox.android.stable')
+        self.sub_prodchan(self.uas['osx'], 'firefox.desktop.stable')
+        self.sub_prodchan(self.uas['linux'], 'firefox.desktop.stable')
+
+    def sub_prodchan(self, ua, prodchan):
+        # Mock out a fake request object that will fool _get_prodchan.
+        # TODO: When we have a real mocking library, do this better.
+        class FakeReq(object):
+            BROWSER = parse_ua(ua)
+        fake_req = FakeReq()
+        eq_(prodchan, _get_prodchan(fake_req))
