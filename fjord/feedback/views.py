@@ -45,9 +45,9 @@ def _handle_feedback_post(request):
             e.save()
 
         return HttpResponseRedirect(reverse('thanks')), form
-    else:
-        # The user did something wrong.
-        return None, form
+
+    # The user did something wrong.
+    return None, form
 
 
 def _get_prodchan(request):
@@ -65,8 +65,8 @@ def _get_prodchan(request):
     if meta.platform == 'Android':
         platform = 'android'
     elif meta.platform == 'FirefoxOS':
-        platform = 'firefoxos'
-    elif meta.browser == 'Firefox':
+        platform = 'fxos'
+    elif product == 'Firefox':
         platform = 'desktop'
     else:
         platform = 'unknown'
@@ -86,12 +86,12 @@ def desktop_stable_feedback(request):
         response, form = _handle_feedback_post(request)
         if response:
             return response
+
+        happy = smart_bool(request.POST.get('happy', None))
+        if happy:
+            forms['happy'] = form
         else:
-            happy = smart_bool(request.POST.get('happy', None))
-            if happy:
-                forms['happy'] = form
-            else:
-                forms['sad'] = form
+            forms['sad'] = form
 
     return render(request, 'feedback/feedback.html', {'forms': forms})
 
@@ -110,15 +110,29 @@ def mobile_stable_feedback(request):
     })
 
 
+# Mapping of prodchan values to views. If the parameter `formname` is passed to
+# `feedback_router`, it will key into this dict.
 feedback_routes = {
     'firefox.desktop.stable': desktop_stable_feedback,
-    None: desktop_stable_feedback,
+    'firefox.android.stable': mobile_stable_feedback,
+    'firefox.fxos.stable': mobile_stable_feedback,
 }
 
 
 @anonymous_csrf_exempt
 def feedback_router(request, formname=None, *args, **kwargs):
-    view = desktop_stable_feedback
-    if request.BROWSER.mobile:
-        view = mobile_stable_feedback
+    """Determine a view to use, and call it.
+
+    If formname is given, reference `feedback_routes` to look up a view.
+    If `formname` is not passed, or isn't found in `feedback_routes`,
+    asssume the user is either a stable desktop Firefox or a stable
+    mobile Firefox based on the parsed UA, and serve them the appropriate
+    page.
+    """
+    view = feedback_routes.get(formname)
+    if view is None:
+        if request.BROWSER.mobile:
+            view = mobile_stable_feedback
+        else:
+            view = desktop_stable_feedback
     return view(request, *args, **kwargs)
