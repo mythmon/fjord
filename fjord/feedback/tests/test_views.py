@@ -1,5 +1,6 @@
 from django.test.client import Client, RequestFactory
 from nose.tools import eq_
+from mock import NonCallableMock
 
 from fjord.base.browsers import parse_ua
 from fjord.base.tests import TestCase, LocalizingClient, reverse
@@ -171,11 +172,9 @@ class TestRouting(TestCase):
         self.sub_routing(self.uas['linux'], False)
 
     def sub_prodchan(self, ua, prodchan):
-        # Mock out a fake request object that will fool _get_prodchan.
-        # TODO: When we have a real mocking library, do this better.
-        class FakeReq(object):
-            BROWSER = parse_ua(ua)
-        fake_req = FakeReq()
+        # _get_prodchan checks request.BROWSER to decide what to do, so
+        # give it a mocked object that has that.
+        fake_req = NonCallableMock(BROWSER=parse_ua(ua))
         eq_(prodchan, _get_prodchan(fake_req))
 
     def test_prodchan(self):
