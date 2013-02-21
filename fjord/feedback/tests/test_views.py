@@ -154,11 +154,6 @@ class TestRouting(TestCase):
         super(TestRouting, self).setUp()
         self.factory = RequestFactory()
 
-    def test_routing(self):
-        self.sub_routing(self.uas['android'], True)
-        self.sub_routing(self.uas['osx'], False)
-        self.sub_routing(self.uas['linux'], False)
-
     def sub_routing(self, ua, mobile):
         url = reverse('feedback')
         extra = {
@@ -170,10 +165,10 @@ class TestRouting(TestCase):
         else:
             self.assertTemplateUsed(r, 'feedback/feedback.html')
 
-    def test_prodchan(self):
-        self.sub_prodchan(self.uas['android'], 'firefox.android.stable')
-        self.sub_prodchan(self.uas['osx'], 'firefox.desktop.stable')
-        self.sub_prodchan(self.uas['linux'], 'firefox.desktop.stable')
+    def test_routing(self):
+        self.sub_routing(self.uas['android'], True)
+        self.sub_routing(self.uas['osx'], False)
+        self.sub_routing(self.uas['linux'], False)
 
     def sub_prodchan(self, ua, prodchan):
         # Mock out a fake request object that will fool _get_prodchan.
@@ -182,3 +177,8 @@ class TestRouting(TestCase):
             BROWSER = parse_ua(ua)
         fake_req = FakeReq()
         eq_(prodchan, _get_prodchan(fake_req))
+
+    def test_prodchan(self):
+        self.sub_prodchan(self.uas['android'], 'firefox.android.stable')
+        self.sub_prodchan(self.uas['osx'], 'firefox.desktop.stable')
+        self.sub_prodchan(self.uas['linux'], 'firefox.desktop.stable')

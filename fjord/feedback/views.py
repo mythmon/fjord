@@ -99,11 +99,13 @@ def desktop_stable_feedback(request):
 def mobile_stable_feedback(request):
     form = SimpleForm()
     happy = None
+
     if request.method == 'POST':
         response, form = _handle_feedback_post(request)
         if response:
             return response
         happy = smart_bool(request.POST.get('happy', None), None)
+
     return render(request, 'feedback/mobile/feedback.html', {
         'form': form,
         'happy': happy,
