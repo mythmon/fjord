@@ -4,14 +4,14 @@
   }
 
   ul.linklist {
-    padding: 0 10px;
     list-style: none;
+    padding: 0 10px;
 
     li {
       span {
+        color: #6d7581;
         font-style: italic;
         font-weight: bold;
-        color: #6d7581;
       }
       a {
         text-decoration: none;
@@ -22,35 +22,35 @@
 
         h3 {
           color: #5084c8;
+          font-size: 20px;
           font-weight: bold;
           margin-top: 0;
-          font-size: 20px;
         }
       }
     }
 
     .social {
       ul {
-        padding: 0;
         list-style: none;
+        padding: 0;
 
         li {
           font-size: 20px;
           margin-top: 10px;
 
           &:before {
+            background: url(../../img/sharing.png) no-repeat 0 0;
             content: " ";
             display: inline-block;
-            width: 30px;
             height: 20px;
             margin-right: -4px;
-            background: url(../../img/sharing.png) no-repeat 0 0;
             text-decoration: none;
+            width: 30px;
           }
 
-          &.twitter:before { background-position: 0 -40px; }
           &.facebook:before { background-position: -35px -40px; }
           &.planet:before { background-position: -75px -40px; }
+          &.twitter:before { background-position: 0 -40px; }
         }
       }
     }

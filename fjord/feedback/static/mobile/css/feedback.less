@@ -2,9 +2,9 @@ article {
   display: none;
 
   section {
-    max-width: 340px;
     display: block;
     margin: 0 auto;
+    max-width: 340px;
   }
 
   &.happy {
@@ -22,24 +22,24 @@ article {
 #intro {
   section {
     button.happy, button.sad {
-      border: 0;
       background: 0;
+      border: 0;
+      display: inline-block;
       margin: 10px;
       padding-top: 100px;
-      width: 130px;
-      display: inline-block;
-      vertical-align: bottom;
       position: relative;
+      vertical-align: bottom;
+      width: 130px;
 
       &:before {
-        content: "";
         background: no-repeat url("../../img/type.png");
-        width: 100px;
+        content: "";
+        display: block;
         height: 100px;
+        left: 15px;
         position: absolute;
         top: 0px;
-        left: 15px;
-        display: block;
+        width: 100px;
       }
     }
 

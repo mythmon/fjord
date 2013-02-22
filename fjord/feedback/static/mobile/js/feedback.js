@@ -1,7 +1,7 @@
 (function() {
 
 function init() {
-  $('#intro button.happy, #intro button.sad').on('click', function() {
+  $('#intro').on('click', 'button', function() {
     var happy = $(this).hasClass('happy');
     $('#intro').addClass('prev');
     $('#moreinfo').removeClass('next').addClass(happy ? 'happy' : 'sad');
